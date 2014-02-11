@@ -1,0 +1,35 @@
+#!/bin/sh
+
+echo "prepare-commit-msg"
+
+# if merge operation
+if [ $2 = "merge" ]
+then
+    GIT_DIR="$(git rev-parse --git-dir)"
+    CURRENT_BRANCH="$(git rev-parse --symbolic --abbrev-ref $(git symbolic-ref HEAD))"
+    LOCK_PATH=$GIT_DIR/hooks
+    YAMMER_LOCK_FILE="yammer_sent.lock"
+    MERGE_BRANCH_NAME_LOCK_FILE="merged_branch_name.lock"
+
+    if [ $CURRENT_BRANCH = "develop" ]
+    then
+        # fetch the first line including "Merge branch 'xxx' into develop",
+        # and get the xxx name to write to tmp file
+        MERGE_BRANCH_NAME=`awk 'NR==1 {print $0}' $1 | sed -n -e "s/.*'\(.*\)'.*/\1/p"`
+
+        # if merged branch is 'develop' or 'origin/develop', just ignore
+        # write other merged branch to tmp file
+        if [[ ! $MERGE_BRANCH_NAME =~ .*develop.* ]]
+        then
+            echo $MERGE_BRANCH_NAME > $LOCK_PATH/$MERGE_BRANCH_NAME_LOCK_FILE
+
+            # delete send yammer lock, let can send yammer message on push 
+            if [ -f $LOCK_PATH/$YAMMER_LOCK_FILE ]
+            then
+                rm $LOCK_PATH/$YAMMER_LOCK_FILE
+            fi
+        fi    
+    fi
+fi
+
+

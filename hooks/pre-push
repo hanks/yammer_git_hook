@@ -1,0 +1,44 @@
+#!/bin/sh
+
+GIT_DIR="$(git rev-parse --git-dir)"
+LOCK_PATH=$GIT_DIR/hooks
+LOCK_FILE="yammer_sent.lock"
+CURRENT_BRANCH="$(git rev-parse --symbolic --abbrev-ref $(git symbolic-ref HEAD))"
+MERGE_BRANCH_NAME_LOCK_FILE="merged_branch_name.lock"
+
+# detect whether in branch develop
+if [ ! $CURRENT_BRANCH = "develop" ]
+then
+    # do nothing, return success
+    echo "not develop branch"
+    exit 0
+fi
+
+# detect merge branch name exists
+if [ ! -f $LOCK_PATH/$MERGE_BRANCH_NAME_LOCK_FILE ]
+then
+    # do nothing, return success
+    echo "no merge branch name"
+    exit 0
+fi
+
+# to avoid duplicate send yammer message, use a tmp file to 
+# be flag, when it exists means send already, if there
+# is no such file, can send yammer message
+if [ ! -f $LOCK_PATH/$LOCK_FILE ]
+then
+    # only do action when push to ghe.gu3.jp:kemono/kemono
+    if [[ $2 =~ .*ghe.gu3.jp:kemono/kemono.* ]]
+    then
+        MERGE_BRANCH_NAME=`cat $LOCK_PATH\MERGE_BRANCH_NAME_LOCK_FILE`
+        echo $MERGE_BRANCH_NAME
+
+        # after send yammer message, set lock file
+        touch $LOCK_PATH/$LOCK_FILE
+    fi
+fi
+
+echo $2
+echo "pre push"
+
+
