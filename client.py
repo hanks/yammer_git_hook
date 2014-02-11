@@ -27,6 +27,9 @@ class Client(object):
     def get_group_id_list(self):
         pass
 
+    def send_message_to_group(self):
+        pass
+        
     def do_request(self, url, data=None):
 
         request = urllib2.Request(url)

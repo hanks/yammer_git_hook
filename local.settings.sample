@@ -4,5 +4,6 @@
     'access_token': 'xxx',         
     'target_group_list': [{'group_id':'xxx'}],
     'topic_list': [{'topic1': 'xxx'}],
-    'redirect_url': 'xxx'
+    'redirect_url': 'xxx',
+    'msg_format': 'xxx'
 }
