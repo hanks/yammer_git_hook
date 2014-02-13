@@ -28,13 +28,20 @@ fi
 if [ ! -f $LOCK_PATH/$LOCK_FILE ]
 then
     # only do action when push to ghe.gu3.jp:kemono/kemono
-    if [[ $2 =~ .*ghe.gu3.jp:kemono/kemono.* ]]
+    #if [[ $2 =~ .*ghe.gu3.jp:kemono/kemono.* ]]
+    if [[ $2 =~ .*github.com:hanks.* ]]
     then
-        MERGE_BRANCH_NAME=`cat $LOCK_PATH\MERGE_BRANCH_NAME_LOCK_FILE`
-        echo $MERGE_BRANCH_NAME
+        MERGE_BRANCH_NAME=`cat $LOCK_PATH/$MERGE_BRANCH_NAME_LOCK_FILE`
+        python $LOCK_PATH/client.py $MERGE_BRANCH_NAME $CURRENT_BRANCH
 
         # after send yammer message, set lock file
-        touch $LOCK_PATH/$LOCK_FILE
+        if [ $? == 0 ]
+        then
+            touch $LOCK_PATH/$LOCK_FILE
+            echo "yammer message sent!!"
+        else
+            echo "yammer message send failed!!"
+        fi
     fi
 fi
 

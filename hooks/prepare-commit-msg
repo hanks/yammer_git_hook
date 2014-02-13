@@ -22,11 +22,13 @@ then
         if [[ ! $MERGE_BRANCH_NAME =~ .*develop.* ]]
         then
             echo $MERGE_BRANCH_NAME > $LOCK_PATH/$MERGE_BRANCH_NAME_LOCK_FILE
+            echo "merged branch file is created!!"
 
             # delete send yammer lock, let can send yammer message on push 
             if [ -f $LOCK_PATH/$YAMMER_LOCK_FILE ]
             then
                 rm $LOCK_PATH/$YAMMER_LOCK_FILE
+                echo "yammer message lock file is deleted!!"
             fi
         fi    
     fi
