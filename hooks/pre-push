@@ -40,9 +40,11 @@ then
             touch $LOCK_PATH/$LOCK_FILE
             echo "yammer message sent!!"
         else
-            echo "yammer message send failed!!"
+            echo "yammer message sent failed!!"
         fi
     fi
+else
+    echo "yammer message has already sent once!!"
 fi
 
 echo $2

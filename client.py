@@ -3,8 +3,8 @@
 
 import urllib2, urllib
 import json
-import sys
-import simplejson
+import sys, os
+import __main__
 
 class Client(object):
 
@@ -12,7 +12,7 @@ class Client(object):
 
     def __init__(self):
         try:
-            settings_file_obj = open(self.SETTINGS_FILE)
+            settings_file_obj = open(os.path.dirname(__main__.__file__) + "/" + self.SETTINGS_FILE)
             data = json.load(settings_file_obj)
         except Exception, e:
             print "Read settings file error.", e
