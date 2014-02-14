@@ -5,6 +5,7 @@ import urllib2, urllib
 import json
 import sys, os
 import __main__
+from optparse import OptionParser
 
 class Client(object):
 
@@ -94,9 +95,20 @@ class Client(object):
             
 if __name__ == '__main__':
     # get args from command line
-    if len(sys.argv) != 3:
-        print "Argument number error, need two arguments."
-        sys.exit(1)
+    usage = """
+usage: %prog [-g] msg_part_1 msg_part_2
+"""
+    parser = OptionParser(usage)
+    parser.add_option("-g", action="store_true", dest="print_group", help="print group info list")
+
+    (options, args) = parser.parse_args()
+    
+    if len(sys.argv) > 3:
+        parser.error("Argument number error!! At most two arguments!!")
 
     client = Client()
-    client.send_message_to_group(sys.argv[1], sys.argv[2])
+
+    if options.print_group:
+        client.print_group_list()
+    else:
+        client.send_message_to_group(args[0], args[1])
