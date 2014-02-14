@@ -111,4 +111,4 @@ usage: %prog [-g] msg_part_1 msg_part_2
     if options.print_group:
         client.print_group_list()
     else:
-        client.send_message_to_group(args[0], args[1])
+        client.send_message_to_group(sys.argv[1], sys.argv[2])
