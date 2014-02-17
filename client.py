@@ -18,30 +18,44 @@ class Client(object):
         except Exception, e:
             print "Read settings file error.", e
             sys.exit(1)
-
-        self.client_id = data['client_id']
-        self.request_url = data['redirect_url']
-        self.msg_format = data['msg_format']
-        self.target_group_list = data['target_group_list']
-        self.topic_list = data['topic_list']
-        self.access_token = data['access_token']
+        try:
+            self.client_id = data['client_id']
+            self.request_url = data['redirect_url']
+            self.msg_format = data['msg_format']
+            self.target_group_list = data['target_group_list']
+            self.topic_list = data['topic_list']
+            self.access_token = data['access_token']
+        except:
+            print "sorry for my hard coding with security considirations."
+            print "json data is not valid!!"
+            sys.exit(1)
 
     def __str__(self):
         return u"{}-{}-{}-{}-{}".format(self.client_id, self.request_url, self.target_group_list, self.topic_list, self.access_token)
 
     @property
     def auth_url(self):
+        """return auth url from cliend_id and redirect_url
+
+        copy it to browser, do auth and get access_token from redirect_url
+        """
         return "https://www.yammer.com/dialog/oauth?client_id={}&redirect_uri={}&response_type=token".format(self.client_id, self.redirect_url)
 
     @property
     def profile_url(self):
+        """Yammer REST API, to get self profile info
+        """
         return "https://www.yammer.com/api/v1/users/current.json"
 
     @property
     def post_message_url(self):
+        """Yammer REST API, to send message
+        """
         return "https://www.yammer.com/api/v1/messages.json"
 
     def get_group_list(self):
+        """Get group info list from profile_url above
+        """
         response = self._do_request(self.profile_url)
         json_data = json.loads(response.read())
         group_list = []
@@ -54,13 +68,16 @@ class Client(object):
         return group_list
 
     def print_group_list(self):
+        """Simple print group list info
+        """
         group_list = self.get_group_list()
         for group in group_list:
             print group['group_id'],
             print group['name']
 
-    def send_message_to_group(self, msg_part_1, msg_part_2):
-        msg = self.msg_format % (msg_part_1, msg_part_2)
+    def send_message_to_group(self, msg):
+        """Build POST data to send message with post_message_url
+        """
         for item in self.target_group_list:
             for index, topic in enumerate(self.topic_list, start=1):
                 group_id = item["group_id"]
@@ -72,7 +89,8 @@ class Client(object):
                 self._do_request(self.post_message_url, post_data)
         
     def _do_request(self, url, data=None):
-
+        """Use urllib2 to send post request with auth header
+        """
         request = urllib2.Request(url)
         request.add_header("Authorization", "Bearer %s" % self.access_token)
 
@@ -111,4 +129,5 @@ usage: %prog [-g] msg_part_1 msg_part_2
     if options.print_group:
         client.print_group_list()
     else:
-        client.send_message_to_group(sys.argv[1], sys.argv[2])
+        msg = client.msg_format % (msg_part_1, msg_part_2)
+        client.send_message_to_group(msg)
