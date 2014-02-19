@@ -79,14 +79,18 @@ class Client(object):
         """Build POST data to send message with post_message_url
         """
         for item in self.target_group_list:
-            for index, topic in enumerate(self.topic_list, start=1):
-                group_id = item["group_id"]
-                post_data = {}
-                post_data['body'] = msg.encode('utf-8')
-                post_data['group_id'] = group_id
-                post_data['topic{}'.format(index)] = topic['topic']
+            post_data = {}
+            
+            if self.topic_list:
+                #if exist topics, add to header
+                for index, topic in enumerate(self.topic_list, start=1):
+                    post_data['topic{}'.format(index)] = topic['topic']
+                    
+            group_id = item["group_id"]
+            post_data['body'] = msg.encode('utf-8')
+            post_data['group_id'] = group_id
 
-                self._do_request(self.post_message_url, post_data)
+            self._do_request(self.post_message_url, post_data)
         
     def _do_request(self, url, data=None):
         """Use urllib2 to send post request with auth header
@@ -129,5 +133,6 @@ usage: %prog [-g] msg_part_1 msg_part_2
     if options.print_group:
         client.print_group_list()
     else:
-        msg = client.msg_format % (msg_part_1, msg_part_2)
+        msg = client.msg_format % (sys.argv[1], sys.argv[2])
+        print msg
         client.send_message_to_group(msg)
