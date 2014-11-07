@@ -27,8 +27,8 @@ fi
 # is no such file, can send yammer message
 if [ ! -f $LOCK_PATH/$LOCK_FILE ]
 then
-    # only do action when push to ghe.gu3.jp:kemono/kemono
-    if [[ $2 =~ .*ghe.gu3.jp:kemono/kemono.* ]]
+    # only do action when push to ssh://git@stash.gu3.jp:7999/kemono/kemono.git
+    if [[ $2 =~ .*git@stash.gu3.jp:7999/kemono/kemono.* ]]
     then
         MERGE_BRANCH_NAME=`cat $LOCK_PATH/$MERGE_BRANCH_NAME_LOCK_FILE`
         echo $MERGE_BRANCH_NAME

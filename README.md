@@ -10,13 +10,13 @@ Because during my job, there is a workflow that when you merge a branch to devel
 ## Demo
 ![alt text][demo]
 
-[demo]: https://raw2.github.com/hanks/yammer_git_hook/master/resources/demo.gif "demo"
+[demo]: https://raw.githubusercontent.com/hanks/yammer_git_hook/master/resources/demo.gif "demo"
 
 **The result will be:**
 
 ![alt text][result]
 
-[result]: https://raw2.github.com/hanks/yammer_git_hook/master/resources/result.png "result"
+[result]: https://raw.githubusercontent.com/hanks/yammer_git_hook/master/resources/result.png "result"
 
 ## Implementation
 Mainly two points:
